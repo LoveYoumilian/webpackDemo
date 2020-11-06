@@ -1,0 +1,7 @@
+.box1{
+  /* background: url("../image/111.gif") no-repeat; */
+  width: 100px;
+  height: 100px;
+  background-size: 100% 100%;
+  background: red;
+}

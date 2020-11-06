@@ -1,0 +1,29 @@
+// .babelrc
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        // 描述您为项目支持/目标的环境
+        "targets": {
+          "browsers": ["> 1%", "last 2 versions"]
+        },
+        "corejs": 2, //新版本需要指定核⼼库版本
+        // "usage"| "entry"| false，默认为false
+        "useBuiltIns": "usage" //按需注⼊
+      },
+      "react"
+    ],
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "decoratorsBeforeExport": true }],
+    ["@babel/plugin-transform-runtime", { "corejs": 2 }],
+    ["import",{
+      "libraryName":"antd",
+      "libraryDirectory":"lib",
+      "style":"css"
+    }],// babel-plugin-import 配置
+    "react-hot-loader/babel" //  React 模块热替换
+  ]
+}
