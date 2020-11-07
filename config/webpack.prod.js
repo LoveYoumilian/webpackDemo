@@ -24,22 +24,24 @@ const proConfig = {
     ],
     splitChunks: {
       minSize: 0, // 默认30000（30kb），但是demo中的文件都很小，minSize设为0，让每个文件都满足大小条件
+      chunks: 'all',      // async表示抽取异步模块，all表示对所有模块生效，initial表示对同步模块生效
       cacheGroups: {
-        vendor: {
-          // nodeModules 代码单独打包成一个 chunk 输出
-          test: /[\\/]node_modules[\\/]/,
-          priority: 10,
-          chunks: 'initial',
-          name: 'vendor',
+        vendors: {  // 抽离第三方插件
+          test: /[\\/]node_modules[\\/]/,     // 指定是node_modules下的第三方包
+          name: 'vendors',
+          priority: -10       // 抽取优先级
         },
-        commons: {
-          // 多次import的文件打包成一个单独的common.js
-          chunks: 'initial',
-          minChunks: 2,
-          maxInitialRequests: 5,
+        commons: {      // 抽离自定义工具库
           name: 'common',
-        },
-      },
+          priority: -20,      // 将引用模块分离成新代码文件的最小体积
+          minChunks: 2,       // 表示将引用模块如不同文件引用了多少次，才能分离生成新chunk
+          minSize: 0
+        }
+      }
+    },
+    // 为 webpack 运行时代码创建单独的chunk
+    runtimeChunk: {
+      name: 'manifest'
     },
   },
 };

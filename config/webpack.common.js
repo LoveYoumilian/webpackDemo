@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+const notifier = require('node-notifier')
 const themes = require('../themes');
 
 // 获取环境变量
@@ -18,8 +19,12 @@ for (let i = 0; i < argv.length; i++) {
 }
 
 let commonCss = [
-  {   //创建style标签,将样式放入
-    //style-loader
+  {
+
+    /*
+     * 创建style标签,将样式放入
+     * style-loader
+     */
     loader: MiniCssExtractPlugin.loader, // CSS 单独抽离一个文件
   },
   {
@@ -195,18 +200,32 @@ module.exports = {
       API_CONFIG: JSON.stringify(envAPI),
     }), // 全局变量
     new FriendlyErrorsPlugin({
-      // 运行成功
-      compilationSuccessInfo: {
-        message: ['你的应用程序在这里运行http：// http://127.0.0.1:8080'],
-        notes: ['有些附加说明要在成功编辑时显示']
-      },
-      // 运行错误
-      onErrors: (severity, errors)=>{
 
       /*
-       * 您可以收听插件转换和优先级的错误
-       * 严重性可以是'错误'或'警告'
+       * 美化控制台输出的插件 https://www.npmjs.com/package/friendly-errors-webpack-plugin
+       * 运行成功
        */
+      compilationSuccessInfo: {
+        messages: ['你的应用程序在这里运行：http://localhost:8811'],
+        notes: ['项目正在运行中...'],
+      },
+      //  运行错误
+      onErrors: function (severity, errors) {
+
+        /*
+         * 可以收听插件转换和优先级的错误
+         * 严重性可以是'错误'或'警告'
+         */
+        if (severity !== 'error') {
+          return;
+        }
+        const error = errors[0];
+        notifier.notify({
+          title: 'Webpack error',
+          message: severity + ': ' + error.name,
+          subtitle: error.file || '',
+          // icon: ICON
+        });
       },
 
       /*
@@ -214,9 +233,6 @@ module.exports = {
        * 默认为true
        */
       clearConsole: true,
-      //添加格式化程序和变换器（见下文）
-      additionalFormatters: [],
-      additionalTransformers: []
-    })
+    }),
   ],
 };
