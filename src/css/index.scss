@@ -1,8 +1,10 @@
 @import './base.scss';
 .box1 {
-  background: $btnbkggreencolor;
+  // background: $btnbkggreencolor;
   width: 500px;
-  height: 500px;
+  height: 200px;
   background-size: 100% 100%;
   background: url('@image/111.gif') no-repeat;
+  font-size: 16px;
+  backface-visibility: hidden;
 }

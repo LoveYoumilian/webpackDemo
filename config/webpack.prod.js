@@ -20,7 +20,7 @@ const proConfig = {
         sourceMap: true,
         parallel: true, //启用多线程并行运行提高编译速度
       }),
-      new OptimizeCSSAssetsPlugin({}),
+      new OptimizeCSSAssetsPlugin({}), // 用于优化或者压缩CSS资源
     ],
     splitChunks: {
       minSize: 0, // 默认30000（30kb），但是demo中的文件都很小，minSize设为0，让每个文件都满足大小条件

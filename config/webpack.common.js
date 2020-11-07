@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const themes = require('../themes');
 
 // 获取环境变量
@@ -122,14 +123,14 @@ module.exports = {
       },
       {
         // exclude排除资源
-        exclude: /\.(css|js|html|less|json|jpg|png|gif|scss)$/,
+        exclude: /\.(css|js|html|less|json|jpg|png|gif|scss|sass)$/,
         loader: 'file-loader',
         options: {
           name: '[hash:10].[ext]',
         },
       },
       {
-        test: /\.scss$/,
+        test: /\.(sass|scss)$/,
         use: [
           ...commonCss,
           {
@@ -193,5 +194,29 @@ module.exports = {
     new webpack.DefinePlugin({
       API_CONFIG: JSON.stringify(envAPI),
     }), // 全局变量
+    new FriendlyErrorsPlugin({
+      // 运行成功
+      compilationSuccessInfo: {
+        message: ['你的应用程序在这里运行http：// http://127.0.0.1:8080'],
+        notes: ['有些附加说明要在成功编辑时显示']
+      },
+      // 运行错误
+      onErrors: (severity, errors)=>{
+
+      /*
+       * 您可以收听插件转换和优先级的错误
+       * 严重性可以是'错误'或'警告'
+       */
+      },
+
+      /*
+       * 是否每次编译之间清除控制台
+       * 默认为true
+       */
+      clearConsole: true,
+      //添加格式化程序和变换器（见下文）
+      additionalFormatters: [],
+      additionalTransformers: []
+    })
   ],
 };
