@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import '@image/media/iconfont.css'
 export const Home = () => {
   useEffect(() => {
-    // console.log(API_CONFIG);
+    // eslint-disable-next-line no-undef
+    console.log(API_CONFIG);
   }, []);
-  return <div className="icon iconfont icon-xiazai">home</div>;
+  return <div className="icon iconfont icon-xiazai">homess</div>;
 };

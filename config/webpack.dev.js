@@ -17,7 +17,7 @@ const devServer = {
 };
 const devConfig = {
   mode: 'development', //模式
-  devtool: 'cheap-module-eval-source-map', //source-map
+  devtool: 'cheap-module-eval-source-map', //source-map错误提示
   devServer,
   plugins: [
     new HotModuleReplacementPlugin(), // 热更新

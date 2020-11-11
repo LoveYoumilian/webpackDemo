@@ -11,11 +11,11 @@ const proConfig = {
     rules: [],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(), // 每次build之前将之前的打包内容清空
     new webpack.optimize.ModuleConcatenationPlugin(),
   ],
   optimization: {
-    minimizer: [
+    minimizer: [ // 代码编译压缩
       new UglifyJsPlugin({
         sourceMap: true,
         parallel: true, //启用多线程并行运行提高编译速度

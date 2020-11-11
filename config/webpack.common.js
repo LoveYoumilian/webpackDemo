@@ -42,6 +42,15 @@ let commonCss = [
       },
     },
   },
+
+  /*
+   * {
+   *   loader: 'px2rem-loader',
+   *   options: {
+   *     remUnit: 75 //设计稿宽度/10
+   *   }
+   * }
+   */
 ];
 // 入口文件
 /*
@@ -79,15 +88,29 @@ module.exports = {
     },
   },
   module: {
+    // 使用函数，从 Webpack 3.0.0 开始支持
+    noParse: (content)=> {
+
+      /*
+       * content 代表一个模块的文件路径
+       * 返回 true or false
+       */
+      return /jquery|chartjs/.test(content);
+    }, // 不去解析jQuery,echart中的依赖库
     rules: [
       {
         test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules|bower_components)/, //排除node_modules 目录下的文件
         enforce: 'pre', // 优先执行
         loader: 'eslint-loader',
         options: {
           fix: true, // 自动修复
         },
+
+        /*
+         * 把对.js 的文件处理交给id为happyBabel 的HappyPack 的实例执行
+         *  use: ['happypack/loader?id=happyBabel'], //这里的id=happyBabel要跟下边的对应
+         */
       },
       {
         oneOf: [
@@ -102,7 +125,7 @@ module.exports = {
               {
                 loader: 'babel-loader',
                 options: {
-                  cacheDirectory: true, //
+                  cacheDirectory: true, //开启babel缓存,第二次构建时,会取之前的缓存
                 },
               },
               {
@@ -135,23 +158,6 @@ module.exports = {
         },
       },
       {
-        test: /\.(sass|scss)$/,
-        use: [
-          ...commonCss,
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-              sassOptions: {
-                javascriptEnabled: true,
-                modifyVars: themes,
-              },
-            },
-          },
-        ],
-        exclude: /node_modules/,
-      },
-      {
         // 编译less
         test: /\.less$/,
         use: [
@@ -169,6 +175,32 @@ module.exports = {
         ],
         exclude: /node_modules/,
       },
+      {
+        test: /\.(sass|scss)$/,
+        use: [
+          ...commonCss,
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              sassOptions: {
+                javascriptEnabled: true,
+                modifyVars: themes,
+              },
+            },
+          },
+        ],
+        exclude: /node_modules/,
+      },
+
+      /*
+       * {
+       *   loader: 'sass-resources-loader',
+       *   options: {
+       *     resources: '../src/css/base.scss'
+       *   }
+       * }
+       */
     ],
   },
   plugins: [
@@ -185,7 +217,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       //CSS 单独抽离一个文件
-      filename: '[name].[hash:6].css',
+      filename: '[name].[contenthash:6].css',
     }),
     new CopyPlugin({
       //静态资源加载
