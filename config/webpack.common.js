@@ -5,7 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-const notifier = require('node-notifier')
+const WorkWebpackPlugin = require('workbox-webpack-plugin');
+const notifier = require('node-notifier');
 const themes = require('../themes');
 
 // 获取环境变量
@@ -71,7 +72,7 @@ module.exports = {
     filename: '[name].[hash:6].js',
   },
   resolve: {
-    extensions: ['.js', '.jsx'], // 导入语句没带文件后缀,webpack自动带上后缀文件
+    extensions: ['.js', '.jsx', '.css', '.less', '.scss', '.ts', '.tsx'], // 导入语句没带文件后缀,webpack自动带上后缀文件
     alias: {
       //设置别名
       '@assets': path.resolve(PATHS.src, 'assets'),
@@ -89,7 +90,7 @@ module.exports = {
   },
   module: {
     // 使用函数，从 Webpack 3.0.0 开始支持
-    noParse: (content)=> {
+    noParse: (content) => {
 
       /*
        * content 代表一个模块的文件路径
@@ -113,6 +114,18 @@ module.exports = {
          */
       },
       {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader'
+      },
+
+      /*
+       * {
+       *   test: /\.tsx?$/,
+       *   loader: 'ts-loader',
+       *   exclude: /node_modules/,
+       * },
+       */
+      {
         oneOf: [
           {
             test: /\.css$/,
@@ -123,15 +136,15 @@ module.exports = {
             exclude: /(node_modules|bower_components)/,
             use: [
               {
-                loader: 'babel-loader',
-                options: {
-                  cacheDirectory: true, //开启babel缓存,第二次构建时,会取之前的缓存
-                },
-              },
-              {
                 loader: 'thread-loader', // 开启多进程打包
                 options: {
                   workers: 2,
+                },
+              },
+              {
+                loader: 'babel-loader',
+                options: {
+                  cacheDirectory: true, //开启babel缓存,第二次构建时,会取之前的缓存
                 },
               },
             ], // options 在 .babelrc 定义
@@ -151,7 +164,7 @@ module.exports = {
       },
       {
         // exclude排除资源
-        exclude: /\.(css|js|html|less|json|jpg|png|gif|scss|sass)$/,
+        exclude: /\.(css|js|html|less|json|jpg|png|gif|scss|sass|ts|tsx)$/,
         loader: 'file-loader',
         options: {
           name: '[hash:10].[ext]',
@@ -265,6 +278,11 @@ module.exports = {
        * 默认为true
        */
       clearConsole: true,
+    }),
+    new WorkWebpackPlugin.GenerateSW({
+      // 离线技术 生成一个serviceWork配置文件
+      clientsClaim: true, // 帮助serviceWork快速启动
+      skipWaiting: true, //删除旧的 serviceWork
     }),
   ],
 };

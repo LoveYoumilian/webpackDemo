@@ -35,11 +35,11 @@ const proConfig = {
           name: 'common',
           priority: -20,      // 将引用模块分离成新代码文件的最小体积
           minChunks: 2,       // 表示将引用模块如不同文件引用了多少次，才能分离生成新chunk
-          minSize: 0
+          reuseExistingChunk: true // 如果当前要打包的模块,和之前已经被提取的模块是同一个,就好复用,而不是重新打包
         }
       }
     },
-    // 为 webpack 运行时代码创建单独的chunk
+    // 为 webpack 运行时代码创建单独的chunk,解决修改a文件导致b文件的contenthash变化
     runtimeChunk: {
       name: 'manifest'
     },
